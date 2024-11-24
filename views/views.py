@@ -47,7 +47,7 @@ def index(request):
 
 def detect_image(request):
     if request.method == 'POST':
-                return JsonResponse({'success': 1, 'label': "The model has not yet been deployed", 'value': 'error', 'probabilities': 0})
+                return JsonResponse({'success': 1, 'label': "The model has not yet been deployed", 'value': 'warning', 'probabilities': 0})
         
 #         if model1 is None or model2 is None or model3 is None or model4 is None:
 #             return JsonResponse({'success': 0, 'message': 'Model is not loaded properly'})
