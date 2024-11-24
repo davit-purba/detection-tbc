@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Home {% endblock %}
+
+{% block content %}
+<script>
+  function toggleDropdown() {
+      const menu = document.getElementById('dropdown-menu');
+      menu.classList.toggle('show');
+  }
+
+  function changeBackground(element) {
+      const items = document.querySelectorAll('.dropdown-item');
+      items.forEach(item => {
+          item.classList.remove('active');
+      });
+
+      element.classList.add('active');
+
+      const selectedModel = element.textContent;
+      localStorage.setItem('selectedModel', selectedModel);
+      displaySelectedModel();
+  }
+
+  function removeState() {
+
+    localStorage.removeItem('selectedModel');
+}
+
+  window.onclick = function(event) {
+      if (!event.target.matches('.dropdown-toggle')) {
+          const dropdowns = document.getElementsByClassName("dropdown-menu");
+          for (let i = 0; i < dropdowns.length; i++) {
+              const openDropdown = dropdowns[i];
+              if (openDropdown.classList.contains('show')) {
+                  openDropdown.classList.remove('show');
+              }
+          }
+      }
+  }
+
+  window.onload = function() {
+    localStorage.removeItem('selectedModel');
+
+    displaySelectedModel();
+}
+
+  function displaySelectedModel() {
+      const savedModel = localStorage.getItem('selectedModel');
+      const displayElement = document.getElementById('modelDisplay');
+
+      if (savedModel) {
+          displayElement.textContent = `${savedModel}`;
+      } else {
+          displayElement.textContent = 'MODELS';
+      }
+  }
+
+  window.onload = function() {
+    localStorage.removeItem('selectedModel');
+    displaySelectedModel();
+}
+
+</script>
+
+<style>
+  body {
+    background-image: url("{% static 'images/enough.png' %}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2px;
+    position: relative;
+  }
+
+  .title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+
+  .qr-scanner {
+    position: absolute;
+    display: none;
+    width: 230px;
+    height: 250px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+  }
+
+  @keyframes slide-down {
+    0% { transform: translateY(0);}
+    50% { transform: translateY(240px); }
+    100% { transform: translateY(0px); }
+  }
+
+  .moving-line-down {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #ff0000;
+    border-radius: 8px;
+    animation: slide-down 6s ease-in-out infinite;
+    transform: translateX(-50%);
+  }
+
+  .btn_end {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .model-display {
+    margin-top: 20px;
+    color: white;
+    font-size: 16px;
+  }
+</style>
+
+<div class="area">
+  <div class="circles">
+      <ul>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+      </ul>
+  </div>
+</div>
+
+<div class="navbar bg-transparent">
+  <a href="{% url 'index' %}">
+    <img src="{% static 'images/logo/d-tech-icon.png' %}" alt="" width="70" height="50" />
+  </a>
+</div>
+
+<div style="margin: 20px;">
+  <div class="block glow col-sm-8 mx-auto">
+    <div class="title">
+      <h6 class="text-white">
+       Computer Vision - Machine Learning - Deep Learning - for Pulmonary Tuberculosis Detection
+      </h6>
+    </div>
+    <form id="uploadForm">
+      {% csrf_token %}
+      <div class="flexrow">
+        <div class="dropdown relative">
+          <button class="btn text-white px-4 py-2 rounded" type="button" onclick="toggleDropdown()">
+              <div id="modelDisplay" class="dropdown-toggle"></div>
+          </button>
+          <ul class="dropdown-menu absolute hidden bg-black shadow-lg rounded w-48" id="dropdown-menu">
+              <li><p class="dropdown-item text-white" onclick="changeBackground(this)">DenseNet121</p></li>
+              <li><p class="dropdown-item text-white" onclick="changeBackground(this)">VGG19</p></li>
+              <li><p class="dropdown-item text-white" onclick="changeBackground(this)">MobileNetV2</p></li>
+              <li><p class="dropdown-item text-white" onclick="changeBackground(this)">InceptionV3</p></li>
+          </ul>
+      </div>
+      <div class="">
+        <input type="file" class="form-control-file text-white" id="image" name="image" accept="image/*">
+      </div>
+    </div>
+    
+    <div id="preview" class="image-container">
+      <img id="previewImage" src="" alt="Image preview" style="display: none; width: 230; height: 250; border-radius: 8px;">
+      <div class="spinner" id="spinner"></div>
+      <div class="qr-scanner" id="qrScanner">
+        <video id="preview_scan"></video>
+        <div class="moving-line-down"></div>
+      </div>
+    </div>
+
+    <div class="btn_end">
+      <button type="button" id="submit" class="detect-btn mt-2">Detect</button>
+    </div>
+  </form>
+</div>
+</div>
+
+{% endblock %}
