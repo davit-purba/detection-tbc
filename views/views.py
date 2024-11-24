@@ -45,8 +45,10 @@ from django.shortcuts import render
 def index(request):
     return render(request, 'view/index.html')
 
-# def detect_image(request):
-#     if request.method == 'POST':
+def detect_image(request):
+    if request.method == 'POST':
+                return JsonResponse({'success': 1, 'label': "The model has not yet been deployed", 'value': 'error', 'probabilities': 0})
+        
 #         if model1 is None or model2 is None or model3 is None or model4 is None:
 #             return JsonResponse({'success': 0, 'message': 'Model is not loaded properly'})
 
@@ -145,5 +147,5 @@ def index(request):
 #         return JsonResponse({'success': 1, 'label': label, 'value': value, 'probabilities': proba.tolist()})
 
 
-#     return JsonResponse({'error': 1, 'message': 'Unsupported HTTP method'})
+    return JsonResponse({'error': 1, 'message': 'Unsupported HTTP method'})
 
